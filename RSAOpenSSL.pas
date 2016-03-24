@@ -1,3 +1,10 @@
+{****************************************************
+Copyright (C) 2015, Ivan Lodyanoy
+ddlencemc@gmail.com
+
+uses libeay32 - Copyright (C) 2002-2010, Marco Ferrante.
+}
+
 unit RSAOpenSSL;
 
 interface
