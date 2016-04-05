@@ -1,6 +1,6 @@
 object Form1: TForm1
-  Left = 131
-  Top = 186
+  Left = 196
+  Top = 192
   Width = 628
   Height = 468
   Caption = 'RSA Sample'
@@ -59,6 +59,15 @@ object Form1: TForm1
       Caption = 'Public Decrypting'
       TabOrder = 3
       OnClick = Button4Click
+    end
+    object Button5: TButton
+      Left = 8
+      Top = 192
+      Width = 121
+      Height = 25
+      Caption = 'SHA1'
+      TabOrder = 4
+      OnClick = Button5Click
     end
   end
   object Panel2: TPanel

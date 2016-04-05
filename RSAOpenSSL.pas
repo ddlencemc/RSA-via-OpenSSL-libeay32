@@ -9,7 +9,7 @@ unit RSAOpenSSL;
 
 interface
 
-uses Forms, Dialogs, Classes, Controls, StdCtrls, libeay32;
+uses SysUtils, Dialogs, Classes, Controls, StdCtrls, libeay32;
 
 type
   TRSAData = packed record
@@ -35,6 +35,7 @@ type
     function LoadPrivateKeyFromString(KeyFile: string): pEVP_PKEY;
 
 
+
   public
     { Public declarations }
     constructor Create(aPathToPublickKey, aPathToPrivateKey: string); overload;
@@ -43,6 +44,9 @@ type
     procedure PrivateDecrypt(var aRSAData: TRSAData);
     procedure PrivateEncrypt(var aRSAData: TRSAData);
     procedure PublicDecrypt(var aRSAData: TRSAData);
+    function SHA1_base64(AData: string): string;
+    function SHA1_Sign_PK(AData: string): string;
+    function SHA1(AData: string): string;
   protected
 
   end;
@@ -454,6 +458,72 @@ begin
   RSA_free(rsa);
 end;
 
+
+function TRSAOpenSSL.SHA1_base64(AData: string): string;
+var
+  b64Length: integer;
+  mdLength: cardinal;
+  mdValue: array [0..EVP_MAX_MD_SIZE] of byte;
+  mdctx: EVP_MD_CTX;
+  memout, b64: pBIO;
+  inbuf, outbuf: array [0..1023] of char;
+begin
+  StrPCopy(inbuf, AData);
+  EVP_DigestInit(@mdctx, EVP_sha1());
+  EVP_DigestUpdate(@mdctx, @inbuf, StrLen(inbuf));
+  EVP_DigestFinal(@mdctx, @mdValue, mdLength);
+
+  b64 := BIO_new(BIO_f_base64);
+  memout := BIO_new(BIO_s_mem);
+  b64 := BIO_push(b64, memout);
+  BIO_write(b64, @mdValue, mdLength);
+  BIO_flush(b64);
+  b64Length := BIO_read(memout, @outbuf, 1024);
+  outbuf[b64Length-1] := #0;
+  result := StrPas(@outbuf);
+end;
+
+function TRSAOpenSSL.SHA1(AData: string): string;
+  var
+  Len: cardinal;
+  mdctx: EVP_MD_CTX;
+  inbuf, outbuf: array [0..1023] of char;
+  key: pEVP_PKEY;
+begin
+  StrPCopy(inbuf, AData);
+  LoadSSL;
+
+  EVP_DigestInit(@mdctx, EVP_sha1());
+  EVP_DigestUpdate(@mdctx, @inbuf, StrLen(inbuf));
+  EVP_DigestFinal(@mdctx, @outbuf, Len);
+
+  FreeSSL;
+  BinToHex(outbuf, inbuf,Len);
+  inbuf[2*Len]:=#0;
+  result := StrPas(inbuf);
+end;
+
+function TRSAOpenSSL.SHA1_Sign_PK(AData: string): string;
+  var
+  Len: cardinal;
+  mdctx: EVP_MD_CTX;
+  inbuf, outbuf: array [0..1023] of char;
+  key: pEVP_PKEY;
+begin
+  StrPCopy(inbuf, AData);
+  LoadSSL;
+
+  key := LoadPrivateKeyFromString('');
+  EVP_SignInit(@mdctx, EVP_sha1());
+  EVP_SignUpdate(@mdctx, @inbuf, StrLen(inbuf));
+  EVP_SignFinal(@mdctx, @outbuf, Len, key);
+
+  FreeSSL;
+  BinToHex(outbuf, inbuf,Len);
+  inbuf[2*Len]:=#0;
+  result := StrPas(inbuf);
+end;
+
 procedure TRSAOpenSSL.LoadSSL;
 begin
   OpenSSL_add_all_algorithms;
@@ -468,5 +538,6 @@ begin
   EVP_cleanup;
   ERR_free_strings;
 end;
+
 
 end.

@@ -22,11 +22,13 @@ type
     Button2: TButton;
     Button3: TButton;
     Button4: TButton;
+    Button5: TButton;
     procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
     procedure Button4Click(Sender: TObject);
+    procedure Button5Click(Sender: TObject);
   private
     { Private declarations }
     fRSAOpenSSL : TRSAOpenSSL;
@@ -97,8 +99,11 @@ begin
   if aRSAData.ErrorResult = 0 then
   memo3.Lines.Text := aRSAData.DecryptedData;
   memo4.Lines.Add(aRSAData.ErrorMessage);
+end;
 
+procedure TForm1.Button5Click(Sender: TObject);
+begin
+  Memo3.Text := fRSAOpenSSL.SHA1(Memo1.Text);
 end;
 
 end.
- 
