@@ -34,8 +34,6 @@ type
     procedure LoadSSL;
     function LoadPrivateKeyFromString(KeyFile: string): pEVP_PKEY;
 
-
-
   public
     { Public declarations }
     constructor Create(aPathToPublickKey, aPathToPrivateKey: string); overload;
@@ -47,6 +45,8 @@ type
     function SHA1_base64(AData: string): string;
     function SHA1_Sign_PK(AData: string): string;
     function SHA1(AData: string): string;
+    function SHA256(AData: string): string;
+    function SHA512(AData: string): string;
   protected
 
   end;
@@ -494,6 +494,46 @@ begin
   LoadSSL;
 
   EVP_DigestInit(@mdctx, EVP_sha1());
+  EVP_DigestUpdate(@mdctx, @inbuf, StrLen(inbuf));
+  EVP_DigestFinal(@mdctx, @outbuf, Len);
+
+  FreeSSL;
+  BinToHex(outbuf, inbuf,Len);
+  inbuf[2*Len]:=#0;
+  result := StrPas(inbuf);
+end;
+
+function TRSAOpenSSL.SHA256(AData: string): string;
+  var
+  Len: cardinal;
+  mdctx: EVP_MD_CTX;
+  inbuf, outbuf: array [0..1023] of char;
+  key: pEVP_PKEY;
+begin
+  StrPCopy(inbuf, AData);
+  LoadSSL;
+
+  EVP_DigestInit(@mdctx, EVP_sha256());
+  EVP_DigestUpdate(@mdctx, @inbuf, StrLen(inbuf));
+  EVP_DigestFinal(@mdctx, @outbuf, Len);
+
+  FreeSSL;
+  BinToHex(outbuf, inbuf,Len);
+  inbuf[2*Len]:=#0;
+  result := StrPas(inbuf);
+end;
+
+function TRSAOpenSSL.SHA512(AData: string): string;
+  var
+  Len: cardinal;
+  mdctx: EVP_MD_CTX;
+  inbuf, outbuf: array [0..1023] of char;
+  key: pEVP_PKEY;
+begin
+  StrPCopy(inbuf, AData);
+  LoadSSL;
+
+  EVP_DigestInit(@mdctx, EVP_sha512());
   EVP_DigestUpdate(@mdctx, @inbuf, StrLen(inbuf));
   EVP_DigestFinal(@mdctx, @outbuf, Len);
 
