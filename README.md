@@ -12,5 +12,4 @@ Implementation of encryption / decryption of a string using the RSA algorithm th
 With the 1024 bit key, the string length with **RSA_PKCS1_PADDING** = 117 bytes, with **RSA_NO_PADDING**, the maximum string length = 128 bytes. Increasing the key bit increases the encryption string length.
 The current version has been fixed and works correctly after compilation in XE versions and higher
 
-####Автор
-Иван Лодяной (ddlencemc@gmail.com)
+
