@@ -72,7 +72,7 @@ function RSA_public_encrypt(flen: integer; from: PCharacter; _to: PCharacter; rs
 function RSA_private_decrypt(flen: integer; from: PCharacter; _to: PCharacter; rsa: pRSA; padding: integer): integer; cdecl;
 ```
 
-## Saples
+## Examples
 
 *KeyFile – пусть до ключа/path key ('C:\key.pem'):*
 
@@ -128,7 +128,7 @@ begin
 	end;
 ```
 
-## Exaple - Encrypt with the PEM-public key*
+## Example - Encrypt with the PEM-public key*
 
 ```delphi
 var
@@ -183,7 +183,7 @@ begin
 end;
 ```
 
-## Exaple - Decrypt result with the PEM-private key*
+## Example - Decrypt result with the PEM-private key*
 ```delphi
 var
   rsa: pRSA;
@@ -228,7 +228,7 @@ end;
 
 ```
 
-## Exaple - Included private/public key 
+## Example - Included private/public key 
 
 ```delphi
 var
