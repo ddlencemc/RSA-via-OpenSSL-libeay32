@@ -11,7 +11,7 @@
 
 
 
-### Decription
+### Description
 
 Implementation of encryption / decryption of a string using the RSA algorithm through the openssl library, specifying the secret and public key files in PEM format.
 
