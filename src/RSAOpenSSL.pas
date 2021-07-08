@@ -96,12 +96,12 @@ begin
         ErrorResult := -1;
         err := ERR_get_error;
         repeat
-          ErrorMessage:= ErrorMessage + string(ERR_error_string(err, nil)) + #10;
+          ErrorMessage := ErrorMessage + string(ERR_error_string(err, nil)) + #10;
           err := ERR_get_error;
         until err = 0;
       end
       else
-        ErrorMessage:= ErrorMessage + 'Publick Key Stored' + #10;
+        ErrorMessage := ErrorMessage + 'Publick Key Stored' + #10;
     end;
 
     if PathToPrivateKey <> '' then
@@ -112,12 +112,12 @@ begin
         ErrorResult := -1;
         err := ERR_get_error;
         repeat
-          ErrorMessage:= ErrorMessage + string(ERR_error_string(err, nil)) + #10;
+          ErrorMessage := ErrorMessage + string(ERR_error_string(err, nil)) + #10;
           err := ERR_get_error;
         until err = 0;
       end
       else
-        ErrorMessage:= ErrorMessage + 'Private Key Stored' + #10;
+        ErrorMessage := ErrorMessage + 'Private Key Stored' + #10;
     end;
   end;
   }
@@ -227,7 +227,7 @@ begin
   begin
     err := ERR_get_error;
     repeat
-      aRSAData.ErrorMessage:= aRSAData.ErrorMessage + string(ERR_error_string(err, nil)) + #10;
+      aRSAData.ErrorMessage := aRSAData.ErrorMessage + string(ERR_error_string(err, nil)) + #10;
       err := ERR_get_error;
     until err = 0;
     exit;
@@ -269,7 +269,7 @@ begin
     err := ERR_get_error;
     aRSAData.ErrorResult := -1;
     repeat
-      aRSAData.ErrorMessage:= aRSAData.ErrorMessage + string(ERR_error_string(err, nil)) + #10;
+      aRSAData.ErrorMessage := aRSAData.ErrorMessage + string(ERR_error_string(err, nil)) + #10;
       err := ERR_get_error;
     until err = 0;
   end;
@@ -332,7 +332,7 @@ begin
     err := ERR_get_error;
     aRSAData.ErrorResult := -1;
     repeat
-      aRSAData.ErrorMessage:= aRSAData.ErrorMessage + string(ERR_error_string(err, nil)) + #10;
+      aRSAData.ErrorMessage := aRSAData.ErrorMessage + string(ERR_error_string(err, nil)) + #10;
       err := ERR_get_error;
     until err = 0;
   end;
@@ -358,7 +358,7 @@ begin
   begin
     err := ERR_get_error;
     repeat
-      aRSAData.ErrorMessage:= aRSAData.ErrorMessage + string(ERR_error_string(err, nil)) + #10;
+      aRSAData.ErrorMessage := aRSAData.ErrorMessage + string(ERR_error_string(err, nil)) + #10;
       err := ERR_get_error;
     until err = 0;
     exit;
@@ -400,7 +400,7 @@ begin
     err := ERR_get_error;
     aRSAData.ErrorResult := -1;
     repeat
-      aRSAData.ErrorMessage:= aRSAData.ErrorMessage + string(ERR_error_string(err, nil)) + #10;
+      aRSAData.ErrorMessage := aRSAData.ErrorMessage + string(ERR_error_string(err, nil)) + #10;
       err := ERR_get_error;
     until err = 0;
   end;
@@ -426,7 +426,7 @@ begin
   begin
     err := ERR_get_error;
     repeat
-      aRSAData.ErrorMessage:= aRSAData.ErrorMessage + string(ERR_error_string(err, nil)) + #10;
+      aRSAData.ErrorMessage := aRSAData.ErrorMessage + string(ERR_error_string(err, nil)) + #10;
       err := ERR_get_error;
     until err = 0;
     exit;
@@ -460,7 +460,7 @@ begin
     err := ERR_get_error;
     aRSAData.ErrorResult := -1;
     repeat
-      aRSAData.ErrorMessage:= aRSAData.ErrorMessage + string(ERR_error_string(err, nil)) + #10;
+      aRSAData.ErrorMessage := aRSAData.ErrorMessage + string(ERR_error_string(err, nil)) + #10;
       err := ERR_get_error;
     until err = 0;
   end;
