@@ -32,7 +32,6 @@ type
 type
   TRSAOpenSSL = class
   private
-    { Private declarations }
     FPublicKey: pEVP_PKEY;
     FPrivateKey: pEVP_PKEY;
     FCryptedBuffer: pointer;
