@@ -6,16 +6,15 @@ uses libeay32 - Copyright (C) 2002-2010, Marco Ferrante.
 }
 
 unit RSAOpenSSL;
-
 interface
-
-uses SysUtils, Dialogs, Classes, Controls, StdCtrls, libeay32;
+uses
+  SysUtils, Dialogs, Classes, Controls, StdCtrls, libeay32;
 
 {$IF CompilerVersion <= 14.0}   // Delphi 7
 type
   TRSAData = packed record
     DecryptedData: string;
-    CryptedData: string;
+    EncryptedData: string;
     ErrorResult: integer;
     ErrorMessage: string;
   end;
@@ -24,7 +23,7 @@ type
 type
   TRSAData = packed record
     DecryptedData: Ansistring;
-    CryptedData: Ansistring;
+    EncryptedData: Ansistring;
     ErrorResult: integer;
     ErrorMessage: string;
   end;
@@ -33,7 +32,6 @@ type
 type
   TRSAOpenSSL = class
   private
-    { Private declarations }
     FPublicKey: pEVP_PKEY;
     FPrivateKey: pEVP_PKEY;
     FCryptedBuffer: pointer;
@@ -53,12 +51,10 @@ type
     procedure FreeSSL;
     procedure LoadSSL;
     function LoadPrivateKeyFromString(): pEVP_PKEY;
-
   public
-    { Public declarations }
     constructor Create(aPathToPublickKey, aPathToPrivateKey: string); overload;
     destructor Destroy; override;
-    procedure PublickEncrypt(var aRSAData: TRSAData);
+    procedure PublicEncrypt(var aRSAData: TRSAData);
     procedure PrivateDecrypt(var aRSAData: TRSAData);
     procedure PrivateEncrypt(var aRSAData: TRSAData);
     procedure PublicDecrypt(var aRSAData: TRSAData);
@@ -67,8 +63,6 @@ type
     function SHA1(AData: string): string;
     function SHA256(AData: string): string;
     function SHA512(AData: string): string;
-  protected
-
   end;
 
 implementation
@@ -79,7 +73,8 @@ constructor TRSAOpenSSL.Create(aPathToPublickKey, aPathToPrivateKey: string);
 var
   err: Cardinal;
 begin
-  //inherited;
+  inherited Create;
+
   OpenSSL_add_all_algorithms;
   OpenSSL_add_all_ciphers;
   OpenSSL_add_all_digests;
@@ -101,12 +96,12 @@ begin
         ErrorResult := -1;
         err := ERR_get_error;
         repeat
-          ErrorMessage:= ErrorMessage + string(ERR_error_string(err, nil)) + #10;
+          ErrorMessage := ErrorMessage + string(ERR_error_string(err, nil)) + #10;
           err := ERR_get_error;
         until err = 0;
       end
       else
-        ErrorMessage:= ErrorMessage + 'Publick Key Stored' + #10;
+        ErrorMessage := ErrorMessage + 'Publick Key Stored' + #10;
     end;
 
     if PathToPrivateKey <> '' then
@@ -117,18 +112,17 @@ begin
         ErrorResult := -1;
         err := ERR_get_error;
         repeat
-          ErrorMessage:= ErrorMessage + string(ERR_error_string(err, nil)) + #10;
+          ErrorMessage := ErrorMessage + string(ERR_error_string(err, nil)) + #10;
           err := ERR_get_error;
         until err = 0;
       end
       else
-        ErrorMessage:= ErrorMessage + 'Private Key Stored' + #10;
+        ErrorMessage := ErrorMessage + 'Private Key Stored' + #10;
     end;
   end;
   }
-
-
 end;
+
 
 destructor TRSAOpenSSL.Destroy;
 begin
@@ -140,16 +134,13 @@ begin
   if FPrivateKey <> nil then
     EVP_PKEY_free(FPrivateKey);
 
-  
   inherited;
 end;
-
 
 
 function TRSAOpenSSL.LoadPublicKey() :pEVP_PKEY ;
 var
   mem: pBIO;
-//  err: Cardinal;
   k: pEVP_PKEY;
 begin
   k:=nil;
@@ -166,7 +157,6 @@ end;
 function TRSAOpenSSL.LoadPrivateKey() :pEVP_PKEY;
 var
   mem: pBIO;
-//  err: Cardinal;
   k: pEVP_PKEY;
 begin
   k := nil;
@@ -180,10 +170,9 @@ begin
 end;
 
 
-function TRSAOpenSSL.LoadPrivateKeyFromString() :pEVP_PKEY;
+function TRSAOpenSSL.LoadPrivateKeyFromString(): pEVP_PKEY;
 var
   mem, keybio: pBIO;
-//  err: Cardinal;
   k: pEVP_PKEY;
   keystring: AnsiString;
 begin
@@ -217,7 +206,8 @@ begin
   end;
 end;
 
-procedure TRSAOpenSSL.PublickEncrypt(var aRSAData: TRSAData);
+
+procedure TRSAOpenSSL.PublicEncrypt(var aRSAData: TRSAData);
 var
   rsa: pRSA;
   str, data: AnsiString;
@@ -234,12 +224,11 @@ begin
   begin
     err := ERR_get_error;
     repeat
-      aRSAData.ErrorMessage:= aRSAData.ErrorMessage + string(ERR_error_string(err, nil)) + #10;
+      aRSAData.ErrorMessage := aRSAData.ErrorMessage + string(ERR_error_string(err, nil)) + #10;
       err := ERR_get_error;
     until err = 0;
     exit;
   end;
-
 
   rsa := EVP_PKEY_get1_RSA(FPublicKey);
   EVP_PKEY_free(FPublicKey);
@@ -253,7 +242,7 @@ begin
 
   if len > 0 then
   begin
-    aRSAData.ErrorResult:= 0;
+    aRSAData.ErrorResult := 0;
     //create a base64 BIO
     b64 := BIO_new(BIO_f_base64);
     mem := BIO_push(b64, BIO_new(BIO_s_mem));
@@ -266,11 +255,10 @@ begin
       //copy data to string
       SetLength(data, b64len);
       Move(penc64^, PAnsiChar(data)^, b64len);
-      aRSAData.ErrorMessage := 'String has been crypted, then base64 encoded.' + #10;
-      aRSAData.CryptedData:= string(data);
+      aRSAData.ErrorMessage := 'String has been encrypted, then base64 encoded.' + #10;
+      aRSAData.EncryptedData := string(data);
     finally
       BIO_free_all(mem);
-
     end;
   end
   else
@@ -278,7 +266,7 @@ begin
     err := ERR_get_error;
     aRSAData.ErrorResult := -1;
     repeat
-      aRSAData.ErrorMessage:= aRSAData.ErrorMessage + string(ERR_error_string(err, nil)) + #10;
+      aRSAData.ErrorMessage := aRSAData.ErrorMessage + string(ERR_error_string(err, nil)) + #10;
       err := ERR_get_error;
     until err = 0;
   end;
@@ -316,15 +304,14 @@ begin
   rsa := EVP_PKEY_get1_RSA(FPrivateKey);
   size := RSA_size(rsa);
 
-
   GetMem(data, size);
   GetMem(str, size);
 
   b64 := BIO_new(BIO_f_base64);
-  mem := BIO_new_mem_buf(PAnsiChar(aRSAData.CryptedData), Length(aRSAData.CryptedData));
+  mem := BIO_new_mem_buf(PAnsiChar(aRSAData.EncryptedData), Length(aRSAData.EncryptedData));
   BIO_flush(mem);
   mem := BIO_push(b64, mem);
-  BIO_read(mem, str , Length(aRSAData.CryptedData));
+  BIO_read(mem, str , Length(aRSAData.EncryptedData));
   BIO_free_all(mem);
 
   len := RSA_private_decrypt(size, PAnsiChar(str), data, rsa, RSA_PKCS1_PADDING);
@@ -342,13 +329,14 @@ begin
     err := ERR_get_error;
     aRSAData.ErrorResult := -1;
     repeat
-      aRSAData.ErrorMessage:= aRSAData.ErrorMessage + string(ERR_error_string(err, nil)) + #10;
+      aRSAData.ErrorMessage := aRSAData.ErrorMessage + string(ERR_error_string(err, nil)) + #10;
       err := ERR_get_error;
     until err = 0;
   end;
   RSA_free(rsa);
   FreeSSL;
 end;
+
 
 procedure TRSAOpenSSL.PrivateEncrypt(var aRSAData: TRSAData);
 var
@@ -367,12 +355,11 @@ begin
   begin
     err := ERR_get_error;
     repeat
-      aRSAData.ErrorMessage:= aRSAData.ErrorMessage + string(ERR_error_string(err, nil)) + #10;
+      aRSAData.ErrorMessage := aRSAData.ErrorMessage + string(ERR_error_string(err, nil)) + #10;
       err := ERR_get_error;
     until err = 0;
     exit;
   end;
-
 
   rsa := EVP_PKEY_get1_RSA(FPrivateKey);
   EVP_PKEY_free(FPrivateKey);
@@ -386,7 +373,7 @@ begin
 
   if len > 0 then
   begin
-    aRSAData.ErrorResult:= 0;
+    aRSAData.ErrorResult := 0;
     //create a base64 BIO
     b64 := BIO_new(BIO_f_base64);
     mem := BIO_push(b64, BIO_new(BIO_s_mem));
@@ -399,11 +386,10 @@ begin
       //copy data to string
       SetLength(data, b64len);
       Move(penc64^, PAnsiChar(data)^, b64len);
-      aRSAData.ErrorMessage := 'String has been crypted, then base64 encoded.' + #10;
-      aRSAData.CryptedData:= string(data);
+      aRSAData.ErrorMessage := 'String has been encrypted, then base64 encoded.' + #10;
+      aRSAData.EncryptedData := string(data);
     finally
       BIO_free_all(mem);
-
     end;
   end
   else
@@ -411,7 +397,7 @@ begin
     err := ERR_get_error;
     aRSAData.ErrorResult := -1;
     repeat
-      aRSAData.ErrorMessage:= aRSAData.ErrorMessage + string(ERR_error_string(err, nil)) + #10;
+      aRSAData.ErrorMessage := aRSAData.ErrorMessage + string(ERR_error_string(err, nil)) + #10;
       err := ERR_get_error;
     until err = 0;
   end;
@@ -437,7 +423,7 @@ begin
   begin
     err := ERR_get_error;
     repeat
-      aRSAData.ErrorMessage:= aRSAData.ErrorMessage + string(ERR_error_string(err, nil)) + #10;
+      aRSAData.ErrorMessage := aRSAData.ErrorMessage + string(ERR_error_string(err, nil)) + #10;
       err := ERR_get_error;
     until err = 0;
     exit;
@@ -446,15 +432,14 @@ begin
   rsa := EVP_PKEY_get1_RSA(FPublicKey);
   size := RSA_size(rsa);
 
-
   GetMem(data, size);
   GetMem(str, size);
 
   b64 := BIO_new(BIO_f_base64);
-  mem := BIO_new_mem_buf(PAnsiChar(aRSAData.CryptedData), Length(aRSAData.CryptedData));
+  mem := BIO_new_mem_buf(PAnsiChar(aRSAData.EncryptedData), Length(aRSAData.EncryptedData));
   BIO_flush(mem);
   mem := BIO_push(b64, mem);
-  BIO_read(mem, str , Length(aRSAData.CryptedData));
+  BIO_read(mem, str , Length(aRSAData.EncryptedData));
   BIO_free_all(mem);
 
   len := RSA_public_decrypt(size, PAnsiChar(str), data, rsa, RSA_PKCS1_PADDING);
@@ -472,7 +457,7 @@ begin
     err := ERR_get_error;
     aRSAData.ErrorResult := -1;
     repeat
-      aRSAData.ErrorMessage:= aRSAData.ErrorMessage + string(ERR_error_string(err, nil)) + #10;
+      aRSAData.ErrorMessage := aRSAData.ErrorMessage + string(ERR_error_string(err, nil)) + #10;
       err := ERR_get_error;
     until err = 0;
   end;
@@ -504,8 +489,9 @@ begin
   result := StrPas(outbuf);
 end;
 
+
 function TRSAOpenSSL.SHA1(AData: string): string;
-  var
+var
   Len: cardinal;
   mdctx: EVP_MD_CTX;
   inbuf, outbuf: array [0..1023] of char;
@@ -520,12 +506,12 @@ begin
 
   FreeSSL;
   BinToHex(outbuf, inbuf,Len);
-  inbuf[2*Len]:=#0;
+  inbuf[2*Len] := #0;
   result := StrPas(inbuf);
 end;
 
 function TRSAOpenSSL.SHA256(AData: string): string;
-  var
+var
   Len: cardinal;
   mdctx: EVP_MD_CTX;
   inbuf, outbuf: array [0..1023] of char;
@@ -540,12 +526,13 @@ begin
 
   FreeSSL;
   BinToHex(outbuf, inbuf,Len);
-  inbuf[2*Len]:=#0;
+  inbuf[2*Len] := #0;
   result := StrPas(inbuf);
 end;
 
+
 function TRSAOpenSSL.SHA512(AData: string): string;
-  var
+var
   Len: cardinal;
   mdctx: EVP_MD_CTX;
   inbuf, outbuf: array [0..1023] of char;
@@ -560,12 +547,13 @@ begin
 
   FreeSSL;
   BinToHex(outbuf, inbuf,Len);
-  inbuf[2*Len]:=#0;
+  inbuf[2*Len] := #0;
   result := StrPas(inbuf);
 end;
 
+
 function TRSAOpenSSL.SHA1_Sign_PK(AData: string): string;
-  var
+var
   Len: cardinal;
   mdctx: EVP_MD_CTX;
   inbuf, outbuf: array [0..1023] of char;
@@ -581,9 +569,10 @@ begin
 
   FreeSSL;
   BinToHex(outbuf, inbuf,Len);
-  inbuf[2*Len]:=#0;
+  inbuf[2*Len] := #0;
   result := StrPas(inbuf);
 end;
+
 
 procedure TRSAOpenSSL.LoadSSL;
 begin
@@ -593,6 +582,7 @@ begin
   ERR_load_crypto_strings;
   ERR_load_RSA_strings;
 end;
+
 
 procedure TRSAOpenSSL.FreeSSL;
 begin

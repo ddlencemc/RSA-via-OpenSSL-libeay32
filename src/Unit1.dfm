@@ -29,7 +29,7 @@ object Form1: TForm1
       Top = 8
       Width = 121
       Height = 25
-      Caption = 'Public Crypting'
+      Caption = 'Encrypt with public key'
       TabOrder = 0
       OnClick = Button1Click
     end
@@ -38,7 +38,7 @@ object Form1: TForm1
       Top = 39
       Width = 121
       Height = 25
-      Caption = 'Private Decrypting'
+      Caption = 'Decrypt with private key'
       TabOrder = 1
       OnClick = Button2Click
     end
@@ -47,7 +47,7 @@ object Form1: TForm1
       Top = 96
       Width = 121
       Height = 25
-      Caption = 'Private Crypting'
+      Caption = 'Encrypt with private key'
       TabOrder = 2
       OnClick = Button3Click
     end
@@ -56,36 +56,36 @@ object Form1: TForm1
       Top = 128
       Width = 121
       Height = 25
-      Caption = 'Public Decrypting'
+      Caption = 'Decrypt with public key'
       TabOrder = 3
       OnClick = Button4Click
     end
-    object Button5: TButton
+    object btnSha1: TButton
       Left = 6
       Top = 194
       Width = 121
       Height = 25
       Caption = 'SHA1'
       TabOrder = 4
-      OnClick = Button5Click
+      OnClick = btnSha1Click
     end
-    object Button6: TButton
+    object btnSha256: TButton
       Left = 8
       Top = 232
       Width = 121
       Height = 25
       Caption = 'SHA256'
       TabOrder = 5
-      OnClick = Button6Click
+      OnClick = btnSha256Click
     end
-    object Button7: TButton
+    object btnSha512: TButton
       Left = 8
       Top = 272
       Width = 121
       Height = 25
       Caption = 'SHA512'
       TabOrder = 6
-      OnClick = Button7Click
+      OnClick = btnSha512Click
     end
   end
   object Panel2: TPanel
@@ -102,7 +102,7 @@ object Form1: TForm1
       Width = 480
       Height = 89
       Align = alTop
-      Caption = 'Data to Crypt'
+      Caption = 'Data to encrypt / hash'
       TabOrder = 0
       object Memo1: TMemo
         Left = 2
@@ -123,7 +123,7 @@ object Form1: TForm1
       Width = 480
       Height = 105
       Align = alTop
-      Caption = 'Crypted Data'
+      Caption = 'Encrypted Data'
       TabOrder = 1
       object Memo2: TMemo
         Left = 2

@@ -1,7 +1,5 @@
 unit Unit1;
-
 interface
-
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, RsaOpenSSL;
@@ -22,22 +20,19 @@ type
     Button2: TButton;
     Button3: TButton;
     Button4: TButton;
-    Button5: TButton;
-    Button6: TButton;
-    Button7: TButton;
+    btnSha1: TButton;
+    btnSha256: TButton;
+    btnSha512: TButton;
     procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
     procedure Button4Click(Sender: TObject);
-    procedure Button5Click(Sender: TObject);
-    procedure Button6Click(Sender: TObject);
-    procedure Button7Click(Sender: TObject);
+    procedure btnSha1Click(Sender: TObject);
+    procedure btnSha256Click(Sender: TObject);
+    procedure btnSha512Click(Sender: TObject);
   private
-    { Private declarations }
-    fRSAOpenSSL : TRSAOpenSSL;
-  public
-    { Public declarations }
+    fRSAOpenSSL: TRSAOpenSSL;
   end;
 
 var
@@ -54,8 +49,6 @@ begin
   aPathToPublickKey := 'public.pem';
   aPathToPrivateKey := 'private.pem';
   fRSAOpenSSL := TRSAOpenSSL.Create(aPathToPublickKey, aPathToPrivateKey);
-
-
 end;
 
 procedure TForm1.Button1Click(Sender: TObject);
@@ -63,23 +56,21 @@ var
   aRSAData: TRSAData;
 begin
   aRSAData.DecryptedData := Memo1.Text;
-  fRSAOpenSSL.PublickEncrypt(aRSAData);
+  fRSAOpenSSL.PublicEncrypt(aRSAData);
   if aRSAData.ErrorResult = 0 then
-  memo2.Lines.Text := aRSAData.CryptedData;
+    memo2.Lines.Text := aRSAData.EncryptedData;
   memo4.Lines.Add(aRSAData.ErrorMessage);
-
 end;
 
 procedure TForm1.Button2Click(Sender: TObject);
 var
   aRSAData: TRSAData;
 begin
-  aRSAData.CryptedData := Memo2.Text;
+  aRSAData.EncryptedData := Memo2.Text;
   fRSAOpenSSL.PrivateDecrypt(aRSAData);
   if aRSAData.ErrorResult = 0 then
-  memo3.Lines.Text := aRSAData.DecryptedData;
+    memo3.Lines.Text := aRSAData.DecryptedData;
   memo4.Lines.Add(aRSAData.ErrorMessage);
-
 end;
 
 procedure TForm1.Button3Click(Sender: TObject);
@@ -89,33 +80,32 @@ begin
   aRSAData.DecryptedData := Memo1.Text;
   fRSAOpenSSL.PrivateEncrypt(aRSAData);
   if aRSAData.ErrorResult = 0 then
-  memo2.Lines.Text := aRSAData.CryptedData;
+    memo2.Lines.Text := aRSAData.EncryptedData;
   memo4.Lines.Add(aRSAData.ErrorMessage);
-
 end;
 
 procedure TForm1.Button4Click(Sender: TObject);
 var
   aRSAData: TRSAData;
 begin
-  aRSAData.CryptedData := Memo2.Text;
+  aRSAData.EncryptedData := Memo2.Text;
   fRSAOpenSSL.PublicDecrypt(aRSAData);
   if aRSAData.ErrorResult = 0 then
-  memo3.Lines.Text := aRSAData.DecryptedData;
+    memo3.Lines.Text := aRSAData.DecryptedData;
   memo4.Lines.Add(aRSAData.ErrorMessage);
 end;
 
-procedure TForm1.Button5Click(Sender: TObject);
+procedure TForm1.btnSha1Click(Sender: TObject);
 begin
   Memo3.Text := fRSAOpenSSL.SHA1(Memo1.Text);
 end;
 
-procedure TForm1.Button6Click(Sender: TObject);
+procedure TForm1.btnSha256Click(Sender: TObject);
 begin
   Memo3.Text := fRSAOpenSSL.SHA256(Memo1.Text);
 end;
 
-procedure TForm1.Button7Click(Sender: TObject);
+procedure TForm1.btnSha512Click(Sender: TObject);
 begin
   Memo3.Text := fRSAOpenSSL.SHA512(Memo1.Text);
 end;
