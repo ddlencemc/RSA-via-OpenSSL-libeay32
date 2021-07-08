@@ -6,10 +6,9 @@ uses libeay32 - Copyright (C) 2002-2010, Marco Ferrante.
 }
 
 unit RSAOpenSSL;
-
 interface
-
-uses SysUtils, Dialogs, Classes, Controls, StdCtrls, libeay32;
+uses
+  SysUtils, Dialogs, Classes, Controls, StdCtrls, libeay32;
 
 {$IF CompilerVersion <= 14.0}   // Delphi 7
 type
@@ -53,9 +52,7 @@ type
     procedure FreeSSL;
     procedure LoadSSL;
     function LoadPrivateKeyFromString(): pEVP_PKEY;
-
   public
-    { Public declarations }
     constructor Create(aPathToPublickKey, aPathToPrivateKey: string); overload;
     destructor Destroy; override;
     procedure PublickEncrypt(var aRSAData: TRSAData);
@@ -67,8 +64,6 @@ type
     function SHA1(AData: string): string;
     function SHA256(AData: string): string;
     function SHA512(AData: string): string;
-  protected
-
   end;
 
 implementation
@@ -126,9 +121,8 @@ begin
     end;
   end;
   }
-
-
 end;
+
 
 destructor TRSAOpenSSL.Destroy;
 begin
@@ -140,10 +134,8 @@ begin
   if FPrivateKey <> nil then
     EVP_PKEY_free(FPrivateKey);
 
-  
   inherited;
 end;
-
 
 
 function TRSAOpenSSL.LoadPublicKey() :pEVP_PKEY ;
@@ -180,7 +172,7 @@ begin
 end;
 
 
-function TRSAOpenSSL.LoadPrivateKeyFromString() :pEVP_PKEY;
+function TRSAOpenSSL.LoadPrivateKeyFromString(): pEVP_PKEY;
 var
   mem, keybio: pBIO;
 //  err: Cardinal;
@@ -217,6 +209,7 @@ begin
   end;
 end;
 
+
 procedure TRSAOpenSSL.PublickEncrypt(var aRSAData: TRSAData);
 var
   rsa: pRSA;
@@ -239,7 +232,6 @@ begin
     until err = 0;
     exit;
   end;
-
 
   rsa := EVP_PKEY_get1_RSA(FPublicKey);
   EVP_PKEY_free(FPublicKey);
@@ -270,7 +262,6 @@ begin
       aRSAData.CryptedData:= string(data);
     finally
       BIO_free_all(mem);
-
     end;
   end
   else
@@ -316,7 +307,6 @@ begin
   rsa := EVP_PKEY_get1_RSA(FPrivateKey);
   size := RSA_size(rsa);
 
-
   GetMem(data, size);
   GetMem(str, size);
 
@@ -350,6 +340,7 @@ begin
   FreeSSL;
 end;
 
+
 procedure TRSAOpenSSL.PrivateEncrypt(var aRSAData: TRSAData);
 var
   rsa: pRSA;
@@ -372,7 +363,6 @@ begin
     until err = 0;
     exit;
   end;
-
 
   rsa := EVP_PKEY_get1_RSA(FPrivateKey);
   EVP_PKEY_free(FPrivateKey);
@@ -403,7 +393,6 @@ begin
       aRSAData.CryptedData:= string(data);
     finally
       BIO_free_all(mem);
-
     end;
   end
   else
@@ -445,7 +434,6 @@ begin
 
   rsa := EVP_PKEY_get1_RSA(FPublicKey);
   size := RSA_size(rsa);
-
 
   GetMem(data, size);
   GetMem(str, size);
@@ -504,8 +492,9 @@ begin
   result := StrPas(outbuf);
 end;
 
+
 function TRSAOpenSSL.SHA1(AData: string): string;
-  var
+var
   Len: cardinal;
   mdctx: EVP_MD_CTX;
   inbuf, outbuf: array [0..1023] of char;
@@ -525,7 +514,7 @@ begin
 end;
 
 function TRSAOpenSSL.SHA256(AData: string): string;
-  var
+var
   Len: cardinal;
   mdctx: EVP_MD_CTX;
   inbuf, outbuf: array [0..1023] of char;
@@ -544,8 +533,9 @@ begin
   result := StrPas(inbuf);
 end;
 
+
 function TRSAOpenSSL.SHA512(AData: string): string;
-  var
+var
   Len: cardinal;
   mdctx: EVP_MD_CTX;
   inbuf, outbuf: array [0..1023] of char;
@@ -564,8 +554,9 @@ begin
   result := StrPas(inbuf);
 end;
 
+
 function TRSAOpenSSL.SHA1_Sign_PK(AData: string): string;
-  var
+var
   Len: cardinal;
   mdctx: EVP_MD_CTX;
   inbuf, outbuf: array [0..1023] of char;
@@ -585,6 +576,7 @@ begin
   result := StrPas(inbuf);
 end;
 
+
 procedure TRSAOpenSSL.LoadSSL;
 begin
   OpenSSL_add_all_algorithms;
@@ -593,6 +585,7 @@ begin
   ERR_load_crypto_strings;
   ERR_load_RSA_strings;
 end;
+
 
 procedure TRSAOpenSSL.FreeSSL;
 begin
