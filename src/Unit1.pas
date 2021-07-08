@@ -20,17 +20,17 @@ type
     Button2: TButton;
     Button3: TButton;
     Button4: TButton;
-    Button5: TButton;
-    Button6: TButton;
-    Button7: TButton;
+    btnSha1: TButton;
+    btnSha256: TButton;
+    btnSha512: TButton;
     procedure FormCreate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
     procedure Button4Click(Sender: TObject);
-    procedure Button5Click(Sender: TObject);
-    procedure Button6Click(Sender: TObject);
-    procedure Button7Click(Sender: TObject);
+    procedure btnSha1Click(Sender: TObject);
+    procedure btnSha256Click(Sender: TObject);
+    procedure btnSha512Click(Sender: TObject);
   private
     fRSAOpenSSL: TRSAOpenSSL;
   end;
@@ -95,17 +95,17 @@ begin
   memo4.Lines.Add(aRSAData.ErrorMessage);
 end;
 
-procedure TForm1.Button5Click(Sender: TObject);
+procedure TForm1.btnSha1Click(Sender: TObject);
 begin
   Memo3.Text := fRSAOpenSSL.SHA1(Memo1.Text);
 end;
 
-procedure TForm1.Button6Click(Sender: TObject);
+procedure TForm1.btnSha256Click(Sender: TObject);
 begin
   Memo3.Text := fRSAOpenSSL.SHA256(Memo1.Text);
 end;
 
-procedure TForm1.Button7Click(Sender: TObject);
+procedure TForm1.btnSha512Click(Sender: TObject);
 begin
   Memo3.Text := fRSAOpenSSL.SHA512(Memo1.Text);
 end;
