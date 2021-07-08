@@ -34,10 +34,7 @@ type
     procedure Button6Click(Sender: TObject);
     procedure Button7Click(Sender: TObject);
   private
-    { Private declarations }
     fRSAOpenSSL : TRSAOpenSSL;
-  public
-    { Public declarations }
   end;
 
 var
@@ -54,8 +51,6 @@ begin
   aPathToPublickKey := 'public.pem';
   aPathToPrivateKey := 'private.pem';
   fRSAOpenSSL := TRSAOpenSSL.Create(aPathToPublickKey, aPathToPrivateKey);
-
-
 end;
 
 procedure TForm1.Button1Click(Sender: TObject);
