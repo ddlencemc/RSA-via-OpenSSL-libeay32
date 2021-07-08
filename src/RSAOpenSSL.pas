@@ -509,7 +509,7 @@ begin
 
   FreeSSL;
   BinToHex(outbuf, inbuf,Len);
-  inbuf[2*Len]:=#0;
+  inbuf[2*Len] := #0;
   result := StrPas(inbuf);
 end;
 
@@ -529,7 +529,7 @@ begin
 
   FreeSSL;
   BinToHex(outbuf, inbuf,Len);
-  inbuf[2*Len]:=#0;
+  inbuf[2*Len] := #0;
   result := StrPas(inbuf);
 end;
 
@@ -550,7 +550,7 @@ begin
 
   FreeSSL;
   BinToHex(outbuf, inbuf,Len);
-  inbuf[2*Len]:=#0;
+  inbuf[2*Len] := #0;
   result := StrPas(inbuf);
 end;
 
@@ -572,7 +572,7 @@ begin
 
   FreeSSL;
   BinToHex(outbuf, inbuf,Len);
-  inbuf[2*Len]:=#0;
+  inbuf[2*Len] := #0;
   result := StrPas(inbuf);
 end;
 
