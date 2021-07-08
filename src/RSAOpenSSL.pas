@@ -141,7 +141,6 @@ end;
 function TRSAOpenSSL.LoadPublicKey() :pEVP_PKEY ;
 var
   mem: pBIO;
-//  err: Cardinal;
   k: pEVP_PKEY;
 begin
   k:=nil;
@@ -158,7 +157,6 @@ end;
 function TRSAOpenSSL.LoadPrivateKey() :pEVP_PKEY;
 var
   mem: pBIO;
-//  err: Cardinal;
   k: pEVP_PKEY;
 begin
   k := nil;
@@ -175,7 +173,6 @@ end;
 function TRSAOpenSSL.LoadPrivateKeyFromString(): pEVP_PKEY;
 var
   mem, keybio: pBIO;
-//  err: Cardinal;
   k: pEVP_PKEY;
   keystring: AnsiString;
 begin
