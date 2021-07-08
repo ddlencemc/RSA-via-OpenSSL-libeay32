@@ -73,7 +73,8 @@ constructor TRSAOpenSSL.Create(aPathToPublickKey, aPathToPrivateKey: string);
 var
   err: Cardinal;
 begin
-  //inherited;
+  inherited Create;
+
   OpenSSL_add_all_algorithms;
   OpenSSL_add_all_ciphers;
   OpenSSL_add_all_digests;
