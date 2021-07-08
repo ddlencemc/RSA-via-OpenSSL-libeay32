@@ -29,7 +29,7 @@ object Form1: TForm1
       Top = 8
       Width = 121
       Height = 25
-      Caption = 'Public Crypting'
+      Caption = 'Encrypt with public key'
       TabOrder = 0
       OnClick = Button1Click
     end
@@ -38,7 +38,7 @@ object Form1: TForm1
       Top = 39
       Width = 121
       Height = 25
-      Caption = 'Private Decrypting'
+      Caption = 'Decrypt with private key'
       TabOrder = 1
       OnClick = Button2Click
     end
@@ -47,7 +47,7 @@ object Form1: TForm1
       Top = 96
       Width = 121
       Height = 25
-      Caption = 'Private Crypting'
+      Caption = 'Encrypt with private key'
       TabOrder = 2
       OnClick = Button3Click
     end
@@ -56,7 +56,7 @@ object Form1: TForm1
       Top = 128
       Width = 121
       Height = 25
-      Caption = 'Public Decrypting'
+      Caption = 'Decrypt with public key'
       TabOrder = 3
       OnClick = Button4Click
     end
@@ -102,7 +102,7 @@ object Form1: TForm1
       Width = 480
       Height = 89
       Align = alTop
-      Caption = 'Data to Crypt'
+      Caption = 'Data to encrypt'
       TabOrder = 0
       object Memo1: TMemo
         Left = 2
@@ -123,7 +123,7 @@ object Form1: TForm1
       Width = 480
       Height = 105
       Align = alTop
-      Caption = 'Crypted Data'
+      Caption = 'Encrypted Data'
       TabOrder = 1
       object Memo2: TMemo
         Left = 2
