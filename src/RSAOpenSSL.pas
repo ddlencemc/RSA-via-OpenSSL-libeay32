@@ -55,7 +55,7 @@ type
   public
     constructor Create(aPathToPublickKey, aPathToPrivateKey: string); overload;
     destructor Destroy; override;
-    procedure PublickEncrypt(var aRSAData: TRSAData);
+    procedure PublicEncrypt(var aRSAData: TRSAData);
     procedure PrivateDecrypt(var aRSAData: TRSAData);
     procedure PrivateEncrypt(var aRSAData: TRSAData);
     procedure PublicDecrypt(var aRSAData: TRSAData);
@@ -210,7 +210,7 @@ begin
 end;
 
 
-procedure TRSAOpenSSL.PublickEncrypt(var aRSAData: TRSAData);
+procedure TRSAOpenSSL.PublicEncrypt(var aRSAData: TRSAData);
 var
   rsa: pRSA;
   str, data: AnsiString;

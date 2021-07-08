@@ -56,7 +56,7 @@ var
   aRSAData: TRSAData;
 begin
   aRSAData.DecryptedData := Memo1.Text;
-  fRSAOpenSSL.PublickEncrypt(aRSAData);
+  fRSAOpenSSL.PublicEncrypt(aRSAData);
   if aRSAData.ErrorResult = 0 then
     memo2.Lines.Text := aRSAData.CryptedData;
   memo4.Lines.Add(aRSAData.ErrorMessage);
