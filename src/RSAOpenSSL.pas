@@ -14,7 +14,7 @@ uses
 type
   TRSAData = packed record
     DecryptedData: string;
-    CryptedData: string;
+    EncryptedData: string;
     ErrorResult: integer;
     ErrorMessage: string;
   end;
@@ -23,7 +23,7 @@ type
 type
   TRSAData = packed record
     DecryptedData: Ansistring;
-    CryptedData: Ansistring;
+    EncryptedData: Ansistring;
     ErrorResult: integer;
     ErrorMessage: string;
   end;
@@ -245,7 +245,7 @@ begin
 
   if len > 0 then
   begin
-    aRSAData.ErrorResult:= 0;
+    aRSAData.ErrorResult := 0;
     //create a base64 BIO
     b64 := BIO_new(BIO_f_base64);
     mem := BIO_push(b64, BIO_new(BIO_s_mem));
@@ -258,8 +258,8 @@ begin
       //copy data to string
       SetLength(data, b64len);
       Move(penc64^, PAnsiChar(data)^, b64len);
-      aRSAData.ErrorMessage := 'String has been crypted, then base64 encoded.' + #10;
-      aRSAData.CryptedData:= string(data);
+      aRSAData.ErrorMessage := 'String has been encrypted, then base64 encoded.' + #10;
+      aRSAData.EncryptedData := string(data);
     finally
       BIO_free_all(mem);
     end;
@@ -311,10 +311,10 @@ begin
   GetMem(str, size);
 
   b64 := BIO_new(BIO_f_base64);
-  mem := BIO_new_mem_buf(PAnsiChar(aRSAData.CryptedData), Length(aRSAData.CryptedData));
+  mem := BIO_new_mem_buf(PAnsiChar(aRSAData.EncryptedData), Length(aRSAData.EncryptedData));
   BIO_flush(mem);
   mem := BIO_push(b64, mem);
-  BIO_read(mem, str , Length(aRSAData.CryptedData));
+  BIO_read(mem, str , Length(aRSAData.EncryptedData));
   BIO_free_all(mem);
 
   len := RSA_private_decrypt(size, PAnsiChar(str), data, rsa, RSA_PKCS1_PADDING);
@@ -376,7 +376,7 @@ begin
 
   if len > 0 then
   begin
-    aRSAData.ErrorResult:= 0;
+    aRSAData.ErrorResult := 0;
     //create a base64 BIO
     b64 := BIO_new(BIO_f_base64);
     mem := BIO_push(b64, BIO_new(BIO_s_mem));
@@ -389,8 +389,8 @@ begin
       //copy data to string
       SetLength(data, b64len);
       Move(penc64^, PAnsiChar(data)^, b64len);
-      aRSAData.ErrorMessage := 'String has been crypted, then base64 encoded.' + #10;
-      aRSAData.CryptedData:= string(data);
+      aRSAData.ErrorMessage := 'String has been encrypted, then base64 encoded.' + #10;
+      aRSAData.EncryptedData := string(data);
     finally
       BIO_free_all(mem);
     end;
@@ -439,10 +439,10 @@ begin
   GetMem(str, size);
 
   b64 := BIO_new(BIO_f_base64);
-  mem := BIO_new_mem_buf(PAnsiChar(aRSAData.CryptedData), Length(aRSAData.CryptedData));
+  mem := BIO_new_mem_buf(PAnsiChar(aRSAData.EncryptedData), Length(aRSAData.EncryptedData));
   BIO_flush(mem);
   mem := BIO_push(b64, mem);
-  BIO_read(mem, str , Length(aRSAData.CryptedData));
+  BIO_read(mem, str , Length(aRSAData.EncryptedData));
   BIO_free_all(mem);
 
   len := RSA_public_decrypt(size, PAnsiChar(str), data, rsa, RSA_PKCS1_PADDING);

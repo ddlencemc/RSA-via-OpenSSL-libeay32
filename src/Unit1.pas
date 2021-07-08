@@ -58,7 +58,7 @@ begin
   aRSAData.DecryptedData := Memo1.Text;
   fRSAOpenSSL.PublicEncrypt(aRSAData);
   if aRSAData.ErrorResult = 0 then
-    memo2.Lines.Text := aRSAData.CryptedData;
+    memo2.Lines.Text := aRSAData.EncryptedData;
   memo4.Lines.Add(aRSAData.ErrorMessage);
 end;
 
@@ -66,7 +66,7 @@ procedure TForm1.Button2Click(Sender: TObject);
 var
   aRSAData: TRSAData;
 begin
-  aRSAData.CryptedData := Memo2.Text;
+  aRSAData.EncryptedData := Memo2.Text;
   fRSAOpenSSL.PrivateDecrypt(aRSAData);
   if aRSAData.ErrorResult = 0 then
     memo3.Lines.Text := aRSAData.DecryptedData;
@@ -80,7 +80,7 @@ begin
   aRSAData.DecryptedData := Memo1.Text;
   fRSAOpenSSL.PrivateEncrypt(aRSAData);
   if aRSAData.ErrorResult = 0 then
-    memo2.Lines.Text := aRSAData.CryptedData;
+    memo2.Lines.Text := aRSAData.EncryptedData;
   memo4.Lines.Add(aRSAData.ErrorMessage);
 end;
 
@@ -88,7 +88,7 @@ procedure TForm1.Button4Click(Sender: TObject);
 var
   aRSAData: TRSAData;
 begin
-  aRSAData.CryptedData := Memo2.Text;
+  aRSAData.EncryptedData := Memo2.Text;
   fRSAOpenSSL.PublicDecrypt(aRSAData);
   if aRSAData.ErrorResult = 0 then
     memo3.Lines.Text := aRSAData.DecryptedData;
