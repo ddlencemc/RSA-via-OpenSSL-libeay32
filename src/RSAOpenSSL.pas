@@ -63,6 +63,7 @@ type
     function SHA1(AData: string): string;
     function SHA256(AData: string): string;
     function SHA512(AData: string): string;
+    procedure GenerateKeyPair(aBits: Integer; out aPublicKey, aPrivateKey: string);
   end;
 
 implementation
@@ -588,6 +589,112 @@ procedure TRSAOpenSSL.FreeSSL;
 begin
   EVP_cleanup;
   ERR_free_strings;
+end;
+
+
+procedure TRSAOpenSSL.GenerateKeyPair(aBits: Integer; out aPublicKey, aPrivateKey: string);
+var
+  bne: pBIGNUM;
+  rsa: pRSA;
+  ret: Integer;
+  publicBio: pBIO;
+  privateBio: pBIO;
+  buf: TBytes;
+  len: Integer;
+  key: pEVP_PKEY;
+  pk: pEVP_PKEY;
+begin
+  aPublicKey := '';
+  aPrivateKey := '';
+
+  // Prepare BIGNUM
+  bne := BN_new;
+  ret := BN_set_word(bne, RSA_F4);
+  if ret = 0 then
+    raise Exception.Create('Failed to create pBIGNUM');
+
+  // Generate the key
+  rsa := RSA_new;
+  ret := RSA_generate_key_ex(rsa, aBits, bne, nil);
+  if ret = 0 then
+    raise Exception.Create('Failed to generate RSA key');
+
+  // Convert RSA to PKEY (so we can save it in non-RSA format that everyone prefers?)
+  pk := EVP_PKEY_new;
+  ret := EVP_PKEY_assign(pk, EVP_PKEY_RSA, rsa);
+  if ret = 0 then
+    raise Exception.Create('Failed to EVP_PKEY_assign_RSA');
+
+  // Get the public key
+  publicBio := BIO_new(BIO_s_mem);
+  try
+    //ret := PEM_write_bio_RSAPublicKey(publicBio, rsa); // RSA format
+    ret := PEM_write_bio_PUBKEY(publicBio, pk); // PKEY format
+    if ret = 0 then
+      raise Exception.Create('Failed to PEM_write_bio_PUBKEY');
+
+    len := BIO_pending(publicBio);
+
+    SetLength(buf, len);
+    ret := BIO_read(publicBio, buf, len);
+    if ret <= 0 then
+      raise Exception.Create('Failed to BIO_read');
+
+    aPublicKey := StringOf(buf);
+  finally
+    if Assigned(publicBio) then
+      BIO_free(publicBio);
+  end;
+
+  // Get the private key
+  privateBio := BIO_new(BIO_s_mem);
+  try
+    //ret := PEM_write_bio_RSAPrivateKey(privateBio, rsa, nil, nil, 0, nil, nil); // RSA format
+    ret := PEM_write_bio_PrivateKey(privateBio, pk, nil, nil, 0, nil, nil); // PKEY format
+    if ret = 0 then
+      raise Exception.Create('Failed to PEM_write_bio_PrivateKey');
+
+    len := BIO_pending(privateBio);
+
+    SetLength(buf, len);
+    ret := BIO_read(privateBio, buf, len);
+    if ret <= 0 then
+      raise Exception.Create('Failed to BIO_read');
+
+    aPrivateKey := StringOf(buf);
+  finally
+    if Assigned(publicBio) then
+      BIO_free(privateBio);
+  end;
+
+{  // Just in case we can save keys directly and compare them for differences
+  // save public key file
+  publicBio := BIO_new_file(PAnsiChar('public_.pem'), PAnsiChar('w+'));
+  //ret := PEM_write_bio_RSAPublicKey(publicBio, rsa); // RSA format
+  ret := PEM_write_bio_PUBKEY(publicBio, pk); // PKEY format
+  if ret = 0 then
+    raise Exception.Create('Failed to save public key file');
+
+  if Assigned(publicBio) then
+    BIO_free(publicBio);
+
+  // save private key file
+  privateBIO := BIO_new_file(PAnsiChar('private_.pem'), PAnsiChar('w+'));
+  //ret := PEM_write_bio_RSAPrivateKey(privateBIO, rsa, nil, nil, 0, nil, nil); // RSA format
+  ret := PEM_write_bio_PrivateKey(privateBIO, pk, nil, nil, 0, nil, nil); // PKEY format
+  if ret = 0 then
+    raise Exception.Create('Failed to save private key file');
+
+  if Assigned(privateBio) then
+    BIO_free(privateBio);}
+
+  if Assigned(Bne) then
+    BN_free(Bne);
+
+  // Ownership of the key assigned via the EVP_PKEY_assign_RSA() call is transferred to the EVP_PKEY
+  // When you free the EVP_PKEY it also frees the underlying RSA key
+  if Assigned(pk) then
+    EVP_PKEY_free(pk);
 end;
 
 
