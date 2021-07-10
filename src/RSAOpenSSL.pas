@@ -34,23 +34,23 @@ type
   private
     FPublicKey: pEVP_PKEY;
     FPrivateKey: pEVP_PKEY;
-    FCryptedBuffer: pointer;
+    FCryptedBuffer: Pointer;
 
 {$IF CompilerVersion <= 14.0}
-    fPublicKeyPath : string;
-    fPrivateKeyPath : string;
+    fPublicKeyPath: string;
+    fPrivateKeyPath: string;
 {$EndIf}
 {$IF CompilerVersion > 14.0}
-    fPublicKeyPath : Ansistring;
-    fPrivateKeyPath : Ansistring;
+    fPublicKeyPath: Ansistring;
+    fPrivateKeyPath: Ansistring;
 {$EndIf}
 
-    function LoadPrivateKey(): pEVP_PKEY;
-    function LoadPublicKey(): pEVP_PKEY;
+    function LoadPrivateKey: pEVP_PKEY;
+    function LoadPublicKey: pEVP_PKEY;
 
     procedure FreeSSL;
     procedure LoadSSL;
-    function LoadPrivateKeyFromString(): pEVP_PKEY;
+    function LoadPrivateKeyFromString: pEVP_PKEY;
   public
     constructor Create(aPathToPublickKey, aPathToPrivateKey: string); overload;
     destructor Destroy; override;
@@ -63,6 +63,7 @@ type
     function SHA1(AData: string): string;
     function SHA256(AData: string): string;
     function SHA512(AData: string): string;
+    procedure GenerateKeyPair(aBits: Integer; out aPublicKey, aPrivateKey: string);
   end;
 
 implementation
@@ -70,8 +71,6 @@ implementation
 { TRSAOpenSSL }
 
 constructor TRSAOpenSSL.Create(aPathToPublickKey, aPathToPrivateKey: string);
-var
-  err: Cardinal;
 begin
   inherited Create;
 
@@ -138,13 +137,13 @@ begin
 end;
 
 
-function TRSAOpenSSL.LoadPublicKey() :pEVP_PKEY ;
+function TRSAOpenSSL.LoadPublicKey: pEVP_PKEY;
 var
   mem: pBIO;
   k: pEVP_PKEY;
 begin
   k:=nil;
-  mem := BIO_new(BIO_s_file());
+  mem := BIO_new(BIO_s_file);
   BIO_read_filename(mem, PAnsiChar(fPublicKeyPath));
   try
     result := PEM_read_bio_PUBKEY(mem, k, nil, nil);
@@ -154,13 +153,13 @@ begin
 end;
 
 
-function TRSAOpenSSL.LoadPrivateKey() :pEVP_PKEY;
+function TRSAOpenSSL.LoadPrivateKey: pEVP_PKEY;
 var
   mem: pBIO;
   k: pEVP_PKEY;
 begin
   k := nil;
-  mem := BIO_new(BIO_s_file());
+  mem := BIO_new(BIO_s_file);
   BIO_read_filename(mem, PAnsiChar(fPrivateKeyPath));
   try
     result := PEM_read_bio_PrivateKey(mem, k, nil, nil);
@@ -170,7 +169,7 @@ begin
 end;
 
 
-function TRSAOpenSSL.LoadPrivateKeyFromString(): pEVP_PKEY;
+function TRSAOpenSSL.LoadPrivateKeyFromString: pEVP_PKEY;
 var
   mem, keybio: pBIO;
   k: pEVP_PKEY;
@@ -196,7 +195,7 @@ begin
 
 
   keybio := BIO_new_mem_buf(Pchar(keystring), -1);
-  mem := BIO_new(BIO_s_mem());
+  mem := BIO_new(BIO_s_mem);
   BIO_read(mem, PAnsiChar(keystring), length(PAnsiChar(keystring)));
 
   try
@@ -218,7 +217,7 @@ var
   err: Cardinal;
 begin
   LoadSSL;
-  FPublicKey := LoadPublicKey();
+  FPublicKey := LoadPublicKey;
 
   if FPublicKey = nil then
   begin
@@ -278,19 +277,15 @@ end;
 procedure TRSAOpenSSL.PrivateDecrypt(var aRSAData: TRSAData);
 var
   rsa: pRSA;
-  key: pEVP_PKEY;
-
-  rsa_derypted: pointer;
   out_: AnsiString;
   str, data: PAnsiChar;
-  len, b64len: Integer;
-  penc64: PAnsiChar;
-  b64, mem, bio_out, bio: pBIO;
+  len: Integer;
+  b64, mem: pBIO;
   size: Integer;
   err: Cardinal;
 begin
   LoadSSL;
-  FPrivateKey := LoadPrivateKey();
+  FPrivateKey := LoadPrivateKey;
   //FPrivateKey := LoadPrivateKeyFromString(''); // Load PrivateKey from including ansistring;
   if FPrivateKey = nil then
   begin
@@ -349,7 +344,7 @@ var
   err: Cardinal;
 begin
   LoadSSL;
-  FPrivateKey := LoadPrivateKey();
+  FPrivateKey := LoadPrivateKey;
 
   if FPrivateKey = nil then
   begin
@@ -410,14 +405,13 @@ var
   rsa: pRSA;
   out_: AnsiString;
   str, data: PAnsiChar;
-  len, b64len: Integer;
-  penc64: PAnsiChar;
-  b64, mem, bio_out, bio: pBIO;
+  len: Integer;
+  b64, mem: pBIO;
   size: Integer;
   err: Cardinal;
 begin
   LoadSSL;
-  FPublicKey := LoadPublicKey();
+  FPublicKey := LoadPublicKey;
 
   if FPublicKey = nil then
   begin
@@ -475,7 +469,7 @@ var
   inbuf, outbuf: array [0..1023] of char;
 begin
   StrPCopy(inbuf, AData);
-  EVP_DigestInit(@mdctx, EVP_sha1());
+  EVP_DigestInit(@mdctx, EVP_sha1);
   EVP_DigestUpdate(@mdctx, @inbuf, StrLen(inbuf));
   EVP_DigestFinal(@mdctx, @mdValue, mdLength);
 
@@ -495,12 +489,11 @@ var
   Len: cardinal;
   mdctx: EVP_MD_CTX;
   inbuf, outbuf: array [0..1023] of char;
-  key: pEVP_PKEY;
 begin
   StrPCopy(inbuf, AData);
   LoadSSL;
 
-  EVP_DigestInit(@mdctx, EVP_sha1());
+  EVP_DigestInit(@mdctx, EVP_sha1);
   EVP_DigestUpdate(@mdctx, @inbuf, StrLen(inbuf));
   EVP_DigestFinal(@mdctx, @outbuf, Len);
 
@@ -515,12 +508,11 @@ var
   Len: cardinal;
   mdctx: EVP_MD_CTX;
   inbuf, outbuf: array [0..1023] of char;
-  key: pEVP_PKEY;
 begin
   StrPCopy(inbuf, AData);
   LoadSSL;
 
-  EVP_DigestInit(@mdctx, EVP_sha256());
+  EVP_DigestInit(@mdctx, EVP_sha256);
   EVP_DigestUpdate(@mdctx, @inbuf, StrLen(inbuf));
   EVP_DigestFinal(@mdctx, @outbuf, Len);
 
@@ -536,12 +528,11 @@ var
   Len: cardinal;
   mdctx: EVP_MD_CTX;
   inbuf, outbuf: array [0..1023] of char;
-  key: pEVP_PKEY;
 begin
   StrPCopy(inbuf, AData);
   LoadSSL;
 
-  EVP_DigestInit(@mdctx, EVP_sha512());
+  EVP_DigestInit(@mdctx, EVP_sha512);
   EVP_DigestUpdate(@mdctx, @inbuf, StrLen(inbuf));
   EVP_DigestFinal(@mdctx, @outbuf, Len);
 
@@ -562,8 +553,8 @@ begin
   StrPCopy(inbuf, AData);
   LoadSSL;
 
-  key := LoadPrivateKeyFromString();
-  EVP_SignInit(@mdctx, EVP_sha1());
+  key := LoadPrivateKeyFromString;
+  EVP_SignInit(@mdctx, EVP_sha1);
   EVP_SignUpdate(@mdctx, @inbuf, StrLen(inbuf));
   EVP_SignFinal(@mdctx, @outbuf, Len, key);
 
@@ -588,6 +579,111 @@ procedure TRSAOpenSSL.FreeSSL;
 begin
   EVP_cleanup;
   ERR_free_strings;
+end;
+
+
+procedure TRSAOpenSSL.GenerateKeyPair(aBits: Integer; out aPublicKey, aPrivateKey: string);
+var
+  bne: pBIGNUM;
+  rsa: pRSA;
+  ret: Integer;
+  publicBio: pBIO;
+  privateBio: pBIO;
+  buf: TBytes;
+  len: Integer;
+  pk: pEVP_PKEY;
+begin
+  aPublicKey := '';
+  aPrivateKey := '';
+
+  // Prepare BIGNUM
+  bne := BN_new;
+  ret := BN_set_word(bne, RSA_F4);
+  if ret = 0 then
+    raise Exception.Create('Failed to create pBIGNUM');
+
+  // Generate the key
+  rsa := RSA_new;
+  ret := RSA_generate_key_ex(rsa, aBits, bne, nil);
+  if ret = 0 then
+    raise Exception.Create('Failed to generate RSA key');
+
+  // Convert RSA to PKEY (so we can save it in non-RSA format that everyone prefers?)
+  pk := EVP_PKEY_new;
+  ret := EVP_PKEY_assign(pk, EVP_PKEY_RSA, rsa);
+  if ret = 0 then
+    raise Exception.Create('Failed to EVP_PKEY_assign_RSA');
+
+  // Get the public key
+  publicBio := BIO_new(BIO_s_mem);
+  try
+    //ret := PEM_write_bio_RSAPublicKey(publicBio, rsa); // RSA format
+    ret := PEM_write_bio_PUBKEY(publicBio, pk); // PKEY format
+    if ret = 0 then
+      raise Exception.Create('Failed to PEM_write_bio_PUBKEY');
+
+    len := BIO_pending(publicBio);
+
+    SetLength(buf, len);
+    ret := BIO_read(publicBio, buf, len);
+    if ret <= 0 then
+      raise Exception.Create('Failed to BIO_read');
+
+    aPublicKey := StringOf(buf);
+  finally
+    if Assigned(publicBio) then
+      BIO_free(publicBio);
+  end;
+
+  // Get the private key
+  privateBio := BIO_new(BIO_s_mem);
+  try
+    //ret := PEM_write_bio_RSAPrivateKey(privateBio, rsa, nil, nil, 0, nil, nil); // RSA format
+    ret := PEM_write_bio_PrivateKey(privateBio, pk, nil, nil, 0, nil, nil); // PKEY format
+    if ret = 0 then
+      raise Exception.Create('Failed to PEM_write_bio_PrivateKey');
+
+    len := BIO_pending(privateBio);
+
+    SetLength(buf, len);
+    ret := BIO_read(privateBio, buf, len);
+    if ret <= 0 then
+      raise Exception.Create('Failed to BIO_read');
+
+    aPrivateKey := StringOf(buf);
+  finally
+    if Assigned(publicBio) then
+      BIO_free(privateBio);
+  end;
+
+{  // Just in case we can save keys directly and compare them for differences
+  // save public key file
+  publicBio := BIO_new_file(PAnsiChar('public_.pem'), PAnsiChar('w+'));
+  //ret := PEM_write_bio_RSAPublicKey(publicBio, rsa); // RSA format
+  ret := PEM_write_bio_PUBKEY(publicBio, pk); // PKEY format
+  if ret = 0 then
+    raise Exception.Create('Failed to save public key file');
+
+  if Assigned(publicBio) then
+    BIO_free(publicBio);
+
+  // save private key file
+  privateBIO := BIO_new_file(PAnsiChar('private_.pem'), PAnsiChar('w+'));
+  //ret := PEM_write_bio_RSAPrivateKey(privateBIO, rsa, nil, nil, 0, nil, nil); // RSA format
+  ret := PEM_write_bio_PrivateKey(privateBIO, pk, nil, nil, 0, nil, nil); // PKEY format
+  if ret = 0 then
+    raise Exception.Create('Failed to save private key file');
+
+  if Assigned(privateBio) then
+    BIO_free(privateBio);}
+
+  if Assigned(Bne) then
+    BN_free(Bne);
+
+  // Ownership of the key assigned via the EVP_PKEY_assign_RSA call is transferred to the EVP_PKEY
+  // When you free the EVP_PKEY it also frees the underlying RSA key
+  if Assigned(pk) then
+    EVP_PKEY_free(pk);
 end;
 
 
