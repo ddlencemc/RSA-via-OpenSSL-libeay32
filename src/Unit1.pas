@@ -7,38 +7,42 @@ uses
 
 type
   TForm1 = class(TForm)
-    Memo1: TMemo;
-    Memo2: TMemo;
-    Memo3: TMemo;
+    meDataToEncryptHash: TMemo;
+    meEncryptedData: TMemo;
+    meDecryptedData: TMemo;
     meLog: TMemo;
-    Button1: TButton;
-    Button2: TButton;
-    Button3: TButton;
-    Button4: TButton;
+    btnPublicEncrypt: TButton;
+    btnPrivateDecrypt: TButton;
+    btnPrivateEncrypt: TButton;
+    btnPublicDecrypt: TButton;
     btnSha1: TButton;
     btnSha256: TButton;
     btnSha512: TButton;
     btnGenerateKeyPair: TButton;
-    Label2: TLabel;
-    Label3: TLabel;
-    Label4: TLabel;
-    Label5: TLabel;
+    labelDataToEncryptHash: TLabel;
+    labelEncryptedData: TLabel;
+    labelDecryptedData: TLabel;
+    labelLog: TLabel;
     meHashedInput: TMemo;
-    Label1: TLabel;
+    labelHashedInput: TLabel;
     mePrivateKey: TMemo;
     mePublicKey: TMemo;
-    Label6: TLabel;
-    Label7: TLabel;
+    labelPrivateKey: TLabel;
+    labelPublicKey: TLabel;
+    btnSHA1_base64: TButton;
+    btnSHA1_Sign_PK: TButton;
     procedure FormCreate(Sender: TObject);
-    procedure Button1Click(Sender: TObject);
-    procedure Button2Click(Sender: TObject);
-    procedure Button3Click(Sender: TObject);
-    procedure Button4Click(Sender: TObject);
+    procedure btnPublicEncryptClick(Sender: TObject);
+    procedure btnPrivateDecryptClick(Sender: TObject);
+    procedure btnPrivateEncryptClick(Sender: TObject);
+    procedure btnPublicDecryptClick(Sender: TObject);
     procedure btnSha1Click(Sender: TObject);
     procedure btnSha256Click(Sender: TObject);
     procedure btnSha512Click(Sender: TObject);
     procedure btnGenerateKeyPairClick(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure btnSHA1_base64Click(Sender: TObject);
+    procedure btnSHA1_Sign_PKClick(Sender: TObject);
   private
     fRSAOpenSSL: TRSAOpenSSL;
   end;
@@ -63,71 +67,73 @@ end;
 
 procedure TForm1.FormDestroy(Sender: TObject);
 begin
+  FreeAndNil( fRSAOpenSSL ); // Jacek Mulawka (12.Dec.2022).
+
   timeEndPeriod(1);
 end;
 
-procedure TForm1.Button1Click(Sender: TObject);
+procedure TForm1.btnPublicEncryptClick(Sender: TObject);
 var
   t: Cardinal;
   aRSAData: TRSAData;
 begin
   t := timeGetTime;
 
-  aRSAData.DecryptedData := Memo1.Text;
+  aRSAData.DecryptedData := meDataToEncryptHash.Text;
   fRSAOpenSSL.PublicEncrypt(aRSAData);
   if aRSAData.ErrorResult = 0 then
-    memo2.Lines.Text := aRSAData.EncryptedData;
+    meEncryptedData.Lines.Text := aRSAData.EncryptedData;
   meLog.Lines.Add(aRSAData.ErrorMessage);
 
   t := timeGetTime - t;
   meLog.Lines.Append(Format('Done in %dms', [t]));
 end;
 
-procedure TForm1.Button2Click(Sender: TObject);
+procedure TForm1.btnPrivateDecryptClick(Sender: TObject);
 var
   t: Cardinal;
   aRSAData: TRSAData;
 begin
   t := timeGetTime;
 
-  aRSAData.EncryptedData := Memo2.Text;
+  aRSAData.EncryptedData := meEncryptedData.Text;
   fRSAOpenSSL.PrivateDecrypt(aRSAData);
   if aRSAData.ErrorResult = 0 then
-    memo3.Lines.Text := aRSAData.DecryptedData;
+    meDecryptedData.Lines.Text := aRSAData.DecryptedData;
   meLog.Lines.Add(aRSAData.ErrorMessage);
 
   t := timeGetTime - t;
   meLog.Lines.Append(Format('Done in %dms', [t]));
 end;
 
-procedure TForm1.Button3Click(Sender: TObject);
+procedure TForm1.btnPrivateEncryptClick(Sender: TObject);
 var
   t: Cardinal;
   aRSAData: TRSAData;
 begin
   t := timeGetTime;
 
-  aRSAData.DecryptedData := Memo1.Text;
+  aRSAData.DecryptedData := meDataToEncryptHash.Text;
   fRSAOpenSSL.PrivateEncrypt(aRSAData);
   if aRSAData.ErrorResult = 0 then
-    memo2.Lines.Text := aRSAData.EncryptedData;
+    meEncryptedData.Lines.Text := aRSAData.EncryptedData;
   meLog.Lines.Add(aRSAData.ErrorMessage);
 
   t := timeGetTime - t;
   meLog.Lines.Append(Format('Done in %dms', [t]));
 end;
 
-procedure TForm1.Button4Click(Sender: TObject);
+procedure TForm1.btnPublicDecryptClick(Sender: TObject);
 var
   t: Cardinal;
   aRSAData: TRSAData;
 begin
   t := timeGetTime;
 
-  aRSAData.EncryptedData := Memo2.Text;
+  aRSAData.EncryptedData := meEncryptedData.Text;
   fRSAOpenSSL.PublicDecrypt(aRSAData);
   if aRSAData.ErrorResult = 0 then
-    memo3.Lines.Text := aRSAData.DecryptedData;
+    meDecryptedData.Lines.Text := aRSAData.DecryptedData;
   meLog.Lines.Add(aRSAData.ErrorMessage);
 
   t := timeGetTime - t;
@@ -136,17 +142,27 @@ end;
 
 procedure TForm1.btnSha1Click(Sender: TObject);
 begin
-  meHashedInput.Text := fRSAOpenSSL.SHA1(Memo1.Text);
+  meHashedInput.Text := fRSAOpenSSL.SHA1(meDataToEncryptHash.Text);
+end;
+
+procedure TForm1.btnSHA1_base64Click(Sender: TObject);
+begin
+  meHashedInput.Text := fRSAOpenSSL.SHA1_base64(meDataToEncryptHash.Text);
+end;
+
+procedure TForm1.btnSHA1_Sign_PKClick(Sender: TObject);
+begin
+  meHashedInput.Text := fRSAOpenSSL.SHA1_Sign_PK(meDataToEncryptHash.Text);
 end;
 
 procedure TForm1.btnSha256Click(Sender: TObject);
 begin
-  meHashedInput.Text := fRSAOpenSSL.SHA256(Memo1.Text);
+  meHashedInput.Text := fRSAOpenSSL.SHA256(meDataToEncryptHash.Text);
 end;
 
 procedure TForm1.btnSha512Click(Sender: TObject);
 begin
-  meHashedInput.Text := fRSAOpenSSL.SHA512(Memo1.Text);
+  meHashedInput.Text := fRSAOpenSSL.SHA512(meDataToEncryptHash.Text);
 end;
 
 procedure TForm1.btnGenerateKeyPairClick(Sender: TObject);

@@ -15,171 +15,187 @@ object Form1: TForm1
   Position = poScreenCenter
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  DesignSize = (
+    665
+    689)
   PixelsPerInch = 96
   TextHeight = 13
-  object Label2: TLabel
+  object labelDataToEncryptHash: TLabel
     Left = 16
     Top = 128
     Width = 107
     Height = 13
     Caption = 'Data to encrypt / hash'
   end
-  object Label3: TLabel
+  object labelEncryptedData: TLabel
     Left = 16
     Top = 240
     Width = 74
     Height = 13
     Caption = 'Encrypted Data'
   end
-  object Label4: TLabel
+  object labelDecryptedData: TLabel
     Left = 16
     Top = 352
     Width = 75
     Height = 13
     Caption = 'Decrypted Data'
   end
-  object Label5: TLabel
+  object labelLog: TLabel
     Left = 16
     Top = 560
     Width = 18
     Height = 13
     Caption = 'Log'
   end
-  object Label1: TLabel
+  object labelHashedInput: TLabel
     Left = 16
     Top = 464
     Width = 61
     Height = 13
     Caption = 'Hashed data'
   end
-  object Label6: TLabel
+  object labelPrivateKey: TLabel
     Left = 16
     Top = 16
     Width = 53
     Height = 13
     Caption = 'Private key'
   end
-  object Label7: TLabel
+  object labelPublicKey: TLabel
     Left = 264
     Top = 16
     Width = 49
     Height = 13
     Caption = 'Public key'
   end
-  object Memo1: TMemo
+  object meDataToEncryptHash: TMemo
     Left = 16
     Top = 144
     Width = 489
     Height = 89
+    Anchors = [akLeft, akTop, akRight]
     Lines.Strings = (
       'Some text for RSA Crypt, for 1024 bit key only 117 byte')
     MaxLength = 128
     ScrollBars = ssVertical
-    TabOrder = 0
+    TabOrder = 12
   end
-  object Memo2: TMemo
+  object meEncryptedData: TMemo
     Left = 16
     Top = 256
     Width = 489
     Height = 89
+    Anchors = [akLeft, akTop, akRight]
     ScrollBars = ssVertical
-    TabOrder = 1
+    TabOrder = 13
   end
-  object Memo3: TMemo
+  object meDecryptedData: TMemo
     Left = 16
     Top = 368
     Width = 489
     Height = 89
+    Anchors = [akLeft, akTop, akRight]
     ScrollBars = ssVertical
-    TabOrder = 2
+    TabOrder = 14
   end
   object meLog: TMemo
     Left = 16
     Top = 576
     Width = 633
     Height = 97
+    Anchors = [akLeft, akTop, akRight, akBottom]
     ScrollBars = ssVertical
-    TabOrder = 3
+    TabOrder = 16
   end
   object btnGenerateKeyPair: TButton
     Left = 512
     Top = 32
     Width = 137
     Height = 25
+    Anchors = [akTop, akRight]
     Caption = 'Generate key pair'
-    TabOrder = 4
+    TabOrder = 0
     OnClick = btnGenerateKeyPairClick
   end
   object btnSha1: TButton
     Left = 512
-    Top = 480
+    Top = 445
     Width = 137
     Height = 25
+    Anchors = [akTop, akRight]
     Caption = 'SHA1'
-    TabOrder = 5
+    TabOrder = 7
     OnClick = btnSha1Click
   end
   object btnSha256: TButton
     Left = 512
-    Top = 504
+    Top = 469
     Width = 137
     Height = 25
+    Anchors = [akTop, akRight]
     Caption = 'SHA256'
-    TabOrder = 6
+    TabOrder = 8
     OnClick = btnSha256Click
   end
   object btnSha512: TButton
     Left = 512
-    Top = 528
+    Top = 493
     Width = 137
     Height = 25
+    Anchors = [akTop, akRight]
     Caption = 'SHA512'
-    TabOrder = 7
+    TabOrder = 9
     OnClick = btnSha512Click
   end
-  object Button1: TButton
+  object btnPublicEncrypt: TButton
     Left = 512
     Top = 144
     Width = 137
     Height = 25
+    Anchors = [akTop, akRight]
     Caption = 'Encrypt with public key'
-    TabOrder = 8
-    OnClick = Button1Click
+    TabOrder = 1
+    OnClick = btnPublicEncryptClick
   end
-  object Button2: TButton
+  object btnPrivateDecrypt: TButton
     Left = 512
     Top = 288
     Width = 137
     Height = 25
+    Anchors = [akTop, akRight]
     Caption = 'Decrypt with private key'
-    TabOrder = 9
-    OnClick = Button2Click
+    TabOrder = 4
+    OnClick = btnPrivateDecryptClick
   end
-  object Button3: TButton
+  object btnPrivateEncrypt: TButton
     Left = 512
     Top = 176
     Width = 137
     Height = 25
+    Anchors = [akTop, akRight]
     Caption = 'Encrypt with private key'
-    TabOrder = 10
-    OnClick = Button3Click
+    TabOrder = 2
+    OnClick = btnPrivateEncryptClick
   end
-  object Button4: TButton
+  object btnPublicDecrypt: TButton
     Left = 512
     Top = 256
     Width = 137
     Height = 25
+    Anchors = [akTop, akRight]
     Caption = 'Decrypt with public key'
-    TabOrder = 11
-    OnClick = Button4Click
+    TabOrder = 3
+    OnClick = btnPublicDecryptClick
   end
   object meHashedInput: TMemo
     Left = 16
     Top = 480
     Width = 489
     Height = 73
+    Anchors = [akLeft, akTop, akRight]
     ScrollBars = ssVertical
-    TabOrder = 12
+    TabOrder = 15
   end
   object mePrivateKey: TMemo
     Left = 16
@@ -187,14 +203,35 @@ object Form1: TForm1
     Width = 241
     Height = 89
     ScrollBars = ssVertical
-    TabOrder = 13
+    TabOrder = 10
   end
   object mePublicKey: TMemo
     Left = 264
     Top = 32
     Width = 241
     Height = 89
+    Anchors = [akLeft, akTop, akRight]
     ScrollBars = ssVertical
-    TabOrder = 14
+    TabOrder = 11
+  end
+  object btnSHA1_base64: TButton
+    Left = 512
+    Top = 520
+    Width = 137
+    Height = 25
+    Anchors = [akTop, akRight]
+    Caption = 'SHA1 base64'
+    TabOrder = 5
+    OnClick = btnSHA1_base64Click
+  end
+  object btnSHA1_Sign_PK: TButton
+    Left = 512
+    Top = 544
+    Width = 137
+    Height = 25
+    Anchors = [akTop, akRight]
+    Caption = 'SHA1 Sign PK'
+    TabOrder = 6
+    OnClick = btnSHA1_Sign_PKClick
   end
 end
