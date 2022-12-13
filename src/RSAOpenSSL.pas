@@ -3,6 +3,10 @@ Copyright (C) 2015, Ivan Lodyanoy
 ddlencemc@gmail.com
 
 uses libeay32 - Copyright (C) 2002-2010, Marco Ferrante.
+
+
+  12.Dec.2022 - improving memory management
+                Jacek Mulawka j.mulawka@interia.pl https://github.com/jacek-mulawka/
 }
 
 unit RSAOpenSSL;
@@ -231,6 +235,7 @@ begin
 
   rsa := EVP_PKEY_get1_RSA(FPublicKey);
   EVP_PKEY_free(FPublicKey);
+  FPublicKey := nil; // Jacek Mulawka (12.Dec.2022).
 
   size := RSA_size(rsa);
 
@@ -269,6 +274,7 @@ begin
       err := ERR_get_error;
     until err = 0;
   end;
+  FreeMem( FCryptedBuffer ); // Jacek Mulawka (12.Dec.2022).
   RSA_free(rsa);
   FreeSSL;
 end;
@@ -328,6 +334,8 @@ begin
       err := ERR_get_error;
     until err = 0;
   end;
+  FreeMem( data ); // Jacek Mulawka (12.Dec.2022).
+  FreeMem( str ); // Jacek Mulawka (12.Dec.2022).
   RSA_free(rsa);
   FreeSSL;
 end;
@@ -358,6 +366,7 @@ begin
 
   rsa := EVP_PKEY_get1_RSA(FPrivateKey);
   EVP_PKEY_free(FPrivateKey);
+  FPrivateKey := nil; // Jacek Mulawka (12.Dec.2022).
 
   size := RSA_size(rsa);
 
@@ -396,6 +405,7 @@ begin
       err := ERR_get_error;
     until err = 0;
   end;
+  FreeMem( FCryptedBuffer ); // Jacek Mulawka (12.Dec.2022).
   RSA_free(rsa);
 end;
 
@@ -455,6 +465,8 @@ begin
       err := ERR_get_error;
     until err = 0;
   end;
+  FreeMem( data ); // Jacek Mulawka (12.Dec.2022).
+  FreeMem( str ); // Jacek Mulawka (12.Dec.2022).
   RSA_free(rsa);
 end;
 
